@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * @fileoverview   events handling from central columns page
  * @name            Central columns
@@ -77,7 +75,7 @@ AJAX.registerOnload('database/central_columns.js', function () {
     }
 
     var argsep = CommonParams.get('arg_separator');
-    var editColumnData = editColumnList + '' + argsep + 'edit_central_columns_page=true' + argsep + 'ajax_request=true' + argsep + 'ajax_page_request=true' + argsep + 'db=' + encodeURIComponent(CommonParams.get('db'));
+    var editColumnData = editColumnList + '' + argsep + 'edit_central_columns_page=true' + argsep + 'ajax_request=true' + argsep + 'ajax_page_request=true' + argsep + 'db=' + encodeURIComponent(CommonParams.get('db')) + argsep + 'server=' + CommonParams.get('server');
     Functions.ajaxShowMessage();
     AJAX.source = $(this);
     $.post('index.php?route=/database/central-columns', editColumnData, AJAX.responseHandler);
@@ -86,7 +84,7 @@ AJAX.registerOnload('database/central_columns.js', function () {
     event.preventDefault();
     event.stopPropagation();
     var argsep = CommonParams.get('arg_separator');
-    var multiColumnEditData = $('#multi_edit_central_columns').serialize() + argsep + 'multi_edit_central_column_save=true' + argsep + 'ajax_request=true' + argsep + 'ajax_page_request=true' + argsep + 'db=' + encodeURIComponent(CommonParams.get('db'));
+    var multiColumnEditData = $('#multi_edit_central_columns').serialize() + argsep + 'multi_edit_central_column_save=true' + argsep + 'ajax_request=true' + argsep + 'ajax_page_request=true' + argsep + 'db=' + encodeURIComponent(CommonParams.get('db')) + argsep + 'server=' + CommonParams.get('server');
     Functions.ajaxShowMessage();
     AJAX.source = $(this);
     $.post('index.php?route=/database/central-columns', multiColumnEditData, AJAX.responseHandler);
@@ -99,7 +97,7 @@ AJAX.registerOnload('database/central_columns.js', function () {
   $('#field_0_0').attr('required', 'required');
   $('#add_new input[type="text"], #add_new input[type="number"], #add_new select').css({
     'width': '10em',
-    '-moz-box-sizing': 'border-box'
+    'box-sizing': 'border-box'
   });
   window.scrollTo(0, 0);
   $(document).on('keyup', '.filter_rows', function () {
@@ -167,7 +165,7 @@ AJAX.registerOnload('database/central_columns.js', function () {
       url: 'index.php?route=/database/central-columns',
       data: datastring + CommonParams.get('arg_separator') + 'ajax_request=true',
       dataType: 'json',
-      success: function success(data) {
+      success: function (data) {
         if (data.message !== '1') {
           Functions.ajaxShowMessage('<div class="alert alert-danger" role="alert">' + data.message + '</div>', false);
         } else {
@@ -188,7 +186,7 @@ AJAX.registerOnload('database/central_columns.js', function () {
         $('#f_' + rownum + ' input, #f_' + rownum + ' select,#f_' + rownum + ' .default_value, #f_' + rownum + ' .open_enum_editor').hide();
         $('#tableslistcontainer').find('.checkall').show();
       },
-      error: function error() {
+      error: function () {
         Functions.ajaxShowMessage('<div class="alert alert-danger" role="alert">' + Messages.strErrorProcessingRequest + '</div>', false);
       }
     });

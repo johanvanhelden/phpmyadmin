@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * @fileoverview   events handling from normalization page
  * @name            normalization
@@ -64,7 +62,8 @@ function goTo3NFStep1(newTables) {
     if (data.subText !== '') {
       $('<input>').attr({
         type: 'button',
-        value: Messages.strDone
+        value: Messages.strDone,
+        class: 'btn btn-primary'
       }).on('click', function () {
         processDependencies('', true);
       }).appendTo('.tblFooters');
@@ -90,7 +89,8 @@ function goTo2NFStep1() {
     if (data.subText !== '') {
       $('<input>').attr({
         type: 'submit',
-        value: Messages.strDone
+        value: Messages.strDone,
+        class: 'btn btn-primary'
       }).on('click', function () {
         processDependencies(data.primary_key);
       }).appendTo('.tblFooters');
@@ -218,7 +218,7 @@ function goTo2NFFinish(pd) {
     url: 'index.php?route=/normalization',
     data: datastring,
     async: false,
-    success: function success(data) {
+    success: function (data) {
       if (data.success === true) {
         if (data.queryError === false) {
           if (normalizeto === '3nf') {
@@ -268,7 +268,7 @@ function goTo3NFFinish(newTables) {
     url: 'index.php?route=/normalization',
     data: datastring,
     async: false,
-    success: function success(data) {
+    success: function (data) {
       if (data.success === true) {
         if (data.queryError === false) {
           $('#mainContent legend').html(data.legendText);
@@ -301,12 +301,12 @@ function goTo2NFStep2(pd, primaryKey) {
   for (var dependson in pd) {
     if (dependson !== primaryKey) {
       pdFound = true;
-      extra += '<p class="displayblock desc">' + Functions.escapeHtml(dependson) + ' -> ' + Functions.escapeHtml(pd[dependson].toString()) + '</p>';
+      extra += '<p class="d-block m-1">' + Functions.escapeHtml(dependson) + ' -> ' + Functions.escapeHtml(pd[dependson].toString()) + '</p>';
     }
   }
 
   if (!pdFound) {
-    extra += '<p class="displayblock desc">' + Messages.strNoPdSelected + '</p>';
+    extra += '<p class="d-block m-1">' + Messages.strNoPdSelected + '</p>';
     extra += '</div>';
   } else {
     extra += '</div>';
@@ -323,7 +323,7 @@ function goTo2NFStep2(pd, primaryKey) {
       url: 'index.php?route=/normalization',
       data: datastring,
       async: false,
-      success: function success(data) {
+      success: function (data) {
         if (data.success === true) {
           extra += data.message;
         } else {
@@ -354,13 +354,13 @@ function goTo3NFStep2(pd, tablesTds) {
 
       if (dependson !== '' && dependson !== table) {
         pdFound = true;
-        extra += '<p class="displayblock desc">' + Functions.escapeHtml(dependson) + ' -> ' + Functions.escapeHtml(pd[dependson].toString()) + '</p>';
+        extra += '<p class="d-block m-1">' + Functions.escapeHtml(dependson) + ' -> ' + Functions.escapeHtml(pd[dependson].toString()) + '</p>';
       }
     }
   }
 
   if (!pdFound) {
-    extra += '<p class="displayblock desc">' + Messages.strNoTdSelected + '</p>';
+    extra += '<p class="d-block m-1">' + Messages.strNoTdSelected + '</p>';
     extra += '</div>';
   } else {
     extra += '</div>';
@@ -377,7 +377,7 @@ function goTo3NFStep2(pd, tablesTds) {
       url: 'index.php?route=/normalization',
       data: datastring,
       async: false,
-      success: function success(data) {
+      success: function (data) {
         dataParsed = data;
 
         if (data.success === true) {
@@ -490,7 +490,7 @@ function moveRepeatingGroup(repeatingCols) {
     url: 'index.php?route=/normalization',
     data: datastring,
     async: false,
-    success: function success(data) {
+    success: function (data) {
       if (data.success === true) {
         if (data.queryError === false) {
           goToStep3();
@@ -548,12 +548,14 @@ AJAX.registerOnload('normalization.js', function () {
         $('<input>').attr({
           type: 'submit',
           id: 'saveSplit',
-          value: Messages.strSave
+          value: Messages.strSave,
+          class: 'btn btn-primary'
         }).appendTo('.tblFooters');
         $('<input>').attr({
           type: 'submit',
           id: 'cancelSplit',
-          value: Messages.strCancel
+          value: Messages.strCancel,
+          class: 'btn btn-secondary'
         }).on('click', function () {
           $('#newCols').html('');
           $(this).parent().html('');
@@ -615,12 +617,14 @@ AJAX.registerOnload('normalization.js', function () {
         $('<input>').attr({
           type: 'submit',
           id: 'saveNewPrimary',
-          value: Messages.strSave
+          value: Messages.strSave,
+          class: 'btn btn-primary'
         }).appendTo('.tblFooters');
         $('<input>').attr({
           type: 'submit',
           id: 'cancelSplit',
-          value: Messages.strCancel
+          value: Messages.strCancel,
+          class: 'btn btn-secondary'
         }).on('click', function () {
           $('#newCols').html('');
           $(this).parent().html('');
@@ -685,14 +689,16 @@ AJAX.registerOnload('normalization.js', function () {
       $('#newCols').html(confirmStr);
       $('<input>').attr({
         type: 'submit',
-        value: Messages.strCancel
+        value: Messages.strCancel,
+        class: 'btn btn-secondary'
       }).on('click', function () {
         $('#newCols').html('');
         $('#extra input[type=checkbox]').prop('checked', false);
       }).appendTo('.tblFooters');
       $('<input>').attr({
         type: 'submit',
-        value: Messages.strGo
+        value: Messages.strGo,
+        class: 'btn btn-primary'
       }).on('click', function () {
         moveRepeatingGroup(repeatingCols);
       }).appendTo('.tblFooters');

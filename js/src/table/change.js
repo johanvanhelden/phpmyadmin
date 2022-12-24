@@ -13,12 +13,12 @@
 /**
  * Modify form controls when the "NULL" checkbox is checked
  *
- * @param theType     string   the MySQL field type
- * @param urlField    string   the urlencoded field name - OBSOLETE
- * @param md5Field    string   the md5 hashed field name
- * @param multiEdit  string   the multi_edit row sequence number
+ * @param {string} theType   the MySQL field type
+ * @param {string} urlField  the urlencoded field name - OBSOLETE
+ * @param {string} md5Field  the md5 hashed field name
+ * @param {string} multiEdit the multi_edit row sequence number
  *
- * @return boolean  always true
+ * @return {boolean} always true
  */
 function nullify (theType, urlField, md5Field, multiEdit) {
     var rowForm = document.forms.insertForm;
@@ -140,6 +140,8 @@ function isTime (val) {
 
 /**
  * To check whether insert section is ignored or not
+ * @param {string} multiEdit
+ * @return {boolean}
  */
 function checkForCheckbox (multiEdit) {
     if ($('#insert_ignore_' + multiEdit).length) {
@@ -198,7 +200,7 @@ function verifyAfterSearchFieldChange (index, searchFormId) {
  * Validate the an input contains multiple int values
  * @param {jQuery} jqueryInput the Jquery object
  * @param {boolean} returnValueIfFine the value to return if the validator passes
- * @returns {void}
+ * @return {void}
  */
 function validateMultipleIntField (jqueryInput, returnValueIfFine) {
     // removing previous rules
@@ -218,7 +220,7 @@ function validateMultipleIntField (jqueryInput, returnValueIfFine) {
  * Validate the an input contains an int value
  * @param {jQuery} jqueryInput the Jquery object
  * @param {boolean} returnValueIfIsNumber the value to return if the validator passes
- * @returns {void}
+ * @return {void}
  */
 function validateIntField (jqueryInput, returnValueIfIsNumber) {
     var mini = parseInt(jqueryInput.data('min'));
@@ -291,11 +293,24 @@ function verificationsAfterFieldChange (urlField, multiEdit, theType) {
         $('#salt_' + target.id).remove();
     }
 
-    if (target.value === 'AES_DECRYPT'
-            || target.value === 'AES_ENCRYPT'
-            || target.value === 'MD5') {
+    // Remove possible blocking rules if the user changed functions
+    $('#' + target.id).rules('remove', 'validationFunctionForMd5');
+    $('#' + target.id).rules('remove', 'validationFunctionForAesDesEncrypt');
+
+    if (target.value === 'MD5') {
         $('#' + target.id).rules('add', {
-            validationFunctionForFuns: {
+            validationFunctionForMd5: {
+                param: $thisInput,
+                depends: function () {
+                    return checkForCheckbox(multiEdit);
+                }
+            }
+        });
+    }
+
+    if (target.value === 'DES_ENCRYPT' || target.value === 'AES_ENCRYPT') {
+        $('#' + target.id).rules('add', {
+            validationFunctionForAesDesEncrypt: {
                 param: $thisInput,
                 depends: function () {
                     return checkForCheckbox(multiEdit);
@@ -420,14 +435,25 @@ AJAX.registerOnload('table/change.js', function () {
             return value.match(/^[a-f0-9]*$/i) !== null;
         });
 
-        jQuery.validator.addMethod('validationFunctionForFuns', function (value, element, options) {
-            if (value.substring(0, 3) === 'AES' && options.data('type') !== 'HEX') {
-                return false;
-            }
-
+        jQuery.validator.addMethod('validationFunctionForMd5', function (value, element, options) {
             return !(value.substring(0, 3) === 'MD5' &&
                 typeof options.data('maxlength') !== 'undefined' &&
                 options.data('maxlength') < 32);
+        });
+
+        jQuery.validator.addMethod('validationFunctionForAesDesEncrypt', function (value, element, options) {
+            var funType = value.substring(0, 3);
+            if (funType !== 'AES' && funType !== 'DES') {
+                return false;
+            }
+
+            var dataType = options.data('type');
+
+            if (dataType === 'HEX' || dataType === 'CHAR') {
+                return true;
+            }
+
+            return false;
         });
 
         jQuery.validator.addMethod('validationFunctionForDateTime', function (value, element, options) {
@@ -458,12 +484,13 @@ AJAX.registerOnload('table/change.js', function () {
                     isTime(dtValue.substring(dv + 1));
             }
         });
-        /*
-         * message extending script must be run
-         * after initiation of functions
-         */
-        extendingValidatorMessages();
     }
+
+    /*
+     * message extending script must be run
+     * after initiation of functions
+     */
+    extendingValidatorMessages();
 
     $.datepicker.initialized = false;
 
@@ -500,8 +527,13 @@ AJAX.registerOnload('table/change.js', function () {
      */
     $(document).on('click', 'input[name=\'gis_data[save]\']', function () {
         var inputName = $('form#gis_data_editor_form').find('input[name=\'input_name\']').val();
-        var $nullCheckbox = $('input[name=\'' + inputName + '\']').parents('tr').find('.checkbox_null');
+        var currentRow = $('input[name=\'' + inputName + '\']').parents('tr');
+        var $nullCheckbox = currentRow.find('.checkbox_null');
         $nullCheckbox.prop('checked', false);
+        var rowId = currentRow.find('.open_gis_editor').data('row-id');
+
+        // Unchecks the Ignore checkbox for the current row
+        $('input[name=\'insert_ignore_' + rowId + '\']').prop('checked', false);
     });
 
     /**
@@ -822,7 +854,8 @@ function changeValueFieldType (elem, searchIndex) {
 
     if ('LIKE' === type ||
         'LIKE %...%' === type ||
-        'NOT LIKE' === type
+        'NOT LIKE' === type ||
+        'NOT LIKE %...%' === type
     ) {
         $('#fieldID_' + searchIndex).data('data-skip-validators', true);
         return;

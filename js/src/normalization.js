@@ -65,7 +65,11 @@ function goTo3NFStep1 (newTables) {
 
             if (data.subText !== '') {
                 $('<input>')
-                    .attr({ type: 'button', value: Messages.strDone })
+                    .attr({
+                        type: 'button',
+                        value: Messages.strDone,
+                        class: 'btn btn-primary'
+                    })
                     .on('click', function () {
                         processDependencies('', true);
                     })
@@ -93,7 +97,11 @@ function goTo2NFStep1 () {
             $('#mainContent #newCols').html('');
             if (data.subText !== '') {
                 $('<input>')
-                    .attr({ type: 'submit', value: Messages.strDone, })
+                    .attr({
+                        type: 'submit',
+                        value: Messages.strDone,
+                        class: 'btn btn-primary'
+                    })
                     .on('click', function () {
                         processDependencies(data.primary_key);
                     })
@@ -301,11 +309,11 @@ function goTo2NFStep2 (pd, primaryKey) {
     for (var dependson in pd) {
         if (dependson !== primaryKey) {
             pdFound = true;
-            extra += '<p class="displayblock desc">' + Functions.escapeHtml(dependson) + ' -> ' + Functions.escapeHtml(pd[dependson].toString()) + '</p>';
+            extra += '<p class="d-block m-1">' + Functions.escapeHtml(dependson) + ' -> ' + Functions.escapeHtml(pd[dependson].toString()) + '</p>';
         }
     }
     if (!pdFound) {
-        extra += '<p class="displayblock desc">' + Messages.strNoPdSelected + '</p>';
+        extra += '<p class="d-block m-1">' + Messages.strNoPdSelected + '</p>';
         extra += '</div>';
     } else {
         extra += '</div>';
@@ -349,12 +357,12 @@ function goTo3NFStep2 (pd, tablesTds) {
             var dependson = tablesTds[table][i];
             if (dependson !== '' && dependson !== table) {
                 pdFound = true;
-                extra += '<p class="displayblock desc">' + Functions.escapeHtml(dependson) + ' -> ' + Functions.escapeHtml(pd[dependson].toString()) + '</p>';
+                extra += '<p class="d-block m-1">' + Functions.escapeHtml(dependson) + ' -> ' + Functions.escapeHtml(pd[dependson].toString()) + '</p>';
             }
         }
     }
     if (!pdFound) {
-        extra += '<p class="displayblock desc">' + Messages.strNoTdSelected + '</p>';
+        extra += '<p class="d-block m-1">' + Messages.strNoTdSelected + '</p>';
         extra += '</div>';
     } else {
         extra += '</div>';
@@ -525,11 +533,21 @@ AJAX.registerOnload('normalization.js', function () {
                     $('.enum_notice').hide();
 
                     $('<input>')
-                        .attr({ type: 'submit', id: 'saveSplit', value: Messages.strSave })
+                        .attr({
+                            type: 'submit',
+                            id: 'saveSplit',
+                            value: Messages.strSave,
+                            class: 'btn btn-primary'
+                        })
                         .appendTo('.tblFooters');
 
                     $('<input>')
-                        .attr({ type: 'submit', id: 'cancelSplit', value: Messages.strCancel })
+                        .attr({
+                            type: 'submit',
+                            id: 'cancelSplit',
+                            value: Messages.strCancel,
+                            class: 'btn btn-secondary'
+                        })
                         .on('click', function () {
                             $('#newCols').html('');
                             $(this).parent().html('');
@@ -597,10 +615,20 @@ AJAX.registerOnload('normalization.js', function () {
                     $('.enum_notice').hide();
 
                     $('<input>')
-                        .attr({ type: 'submit', id: 'saveNewPrimary', value: Messages.strSave })
+                        .attr({
+                            type: 'submit',
+                            id: 'saveNewPrimary',
+                            value: Messages.strSave,
+                            class: 'btn btn-primary'
+                        })
                         .appendTo('.tblFooters');
                     $('<input>')
-                        .attr({ type: 'submit', id: 'cancelSplit', value: Messages.strCancel })
+                        .attr({
+                            type: 'submit',
+                            id: 'cancelSplit',
+                            value: Messages.strCancel,
+                            class: 'btn btn-secondary'
+                        })
                         .on('click', function () {
                             $('#newCols').html('');
                             $(this).parent().html('');
@@ -673,14 +701,22 @@ AJAX.registerOnload('normalization.js', function () {
             $('#newCols').html(confirmStr);
 
             $('<input>')
-                .attr({ type: 'submit', value: Messages.strCancel })
+                .attr({
+                    type: 'submit',
+                    value: Messages.strCancel,
+                    class: 'btn btn-secondary'
+                })
                 .on('click', function () {
                     $('#newCols').html('');
                     $('#extra input[type=checkbox]').prop('checked', false);
                 })
                 .appendTo('.tblFooters');
             $('<input>')
-                .attr({ type: 'submit', value: Messages.strGo })
+                .attr({
+                    type: 'submit',
+                    value: Messages.strGo,
+                    class: 'btn btn-primary'
+                })
                 .on('click', function () {
                     moveRepeatingGroup(repeatingCols);
                 })

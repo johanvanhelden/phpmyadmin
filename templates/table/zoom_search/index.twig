@@ -1,19 +1,19 @@
 <ul class="nav nav-pills m-2">
   <li class="nav-item">
     <a class="nav-link" href="{{ url('/table/search', {'db': db, 'table': table, 'pos': 0}) }}">
-      {{ get_icon('b_search', 'Table search'|trans) }}
+      {{ get_icon('b_search', 'Table search'|trans, false, false, 'TabsMode') }}
     </a>
   </li>
 
   <li class="nav-item">
     <a class="nav-link active" href="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}">
-      {{ get_icon('b_select', 'Zoom search'|trans) }}
+      {{ get_icon('b_select', 'Zoom search'|trans, false, false, 'TabsMode') }}
     </a>
   </li>
 
   <li class="nav-item">
     <a class="nav-link" href="{{ url('/table/find-replace', {'db': db, 'table': table}) }}">
-      {{ get_icon('b_find_replace', 'Find and replace'|trans) }}
+      {{ get_icon('b_find_replace', 'Find and replace'|trans, false, false, 'TabsMode') }}
     </a>
   </li>
 </ul>
@@ -23,14 +23,12 @@
   <input type="hidden" name="goto" value="{{ goto }}">
   <input type="hidden" name="back" value="{{ url('/table/zoom-search') }}">
 
-  <fieldset id="fieldset_zoom_search">
-    <fieldset id="inputSection">
-      <legend>
-        {% trans 'Do a "query by example" (wildcard: "%") for two different columns' %}
-      </legend>
+  <div class="card mb-3">
+    <div class="card-header">{% trans 'Do a "query by example" (wildcard: "%") for two different columns' %}</div>
 
-      <table class="table table-light table-striped table-hover table-sm" id="tableFieldsId">
-        <thead class="thead-light">
+    <div class="card-body" id="inputSection">
+      <table class="table table-light table-striped table-hover table-sm w-auto" id="tableFieldsId">
+        <thead class="table-light">
           <tr>
             {% if geom_column_flag %}
               <th>{% trans 'Function' %}</th>
@@ -148,11 +146,11 @@
           </td>
         </tr>
       </table>
-    </fieldset>
-  </fieldset>
+    </div>
 
-  <fieldset class="tblFooters">
-    <input class="btn btn-primary" type="submit" name="zoom_submit" id="inputFormSubmitId" value="{% trans 'Go' %}">
-  </fieldset>
+    <div class="card-footer">
+      <input class="btn btn-primary" type="submit" name="zoom_submit" id="inputFormSubmitId" value="{% trans 'Go' %}">
+    </div>
+  </div>
 </form>
 <div id="sqlqueryresultsouter"></div>
